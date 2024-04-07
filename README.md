@@ -63,4 +63,44 @@ button:hover {
 #response {
     margin-top: 20px;
 }
+document.getElementById('sendButton').addEventListener('click', function() {
+    var message = document.getElementById('message').value;
+
+    // Send the message to the server
+    fetch('/send-sms', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: message })
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('response').textContent = data.message;
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+const port = 3000;
+
+app.use(bodyParser.json());
+
+app.post('/send-sms', (req, res) => {
+    const message = req.body.message;
+    // Replace this with code to send SMS using a bulk SMS service provider
+    // For example, using Twilio or Nexmo APIs
+    console.log('Sending SMS:', message);
+    res.json({ message: 'SMS sent successfully' });
+});
+
+app.use(express.static('public'));
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});
 
